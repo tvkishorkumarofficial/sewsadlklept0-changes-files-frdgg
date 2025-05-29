@@ -118,59 +118,6 @@ class Searches:
         uniqueTerms = [t for t in uniqueTerms if t.lower() != term.lower()]
         return uniqueTerms
 
-    def bingSearches(self, searchRelatedTerms: bool = False, relatedTermsCount: int = 0) -> None:
-        logging.info(f"[BING] Starting {self.browser.browserType.capitalize()} Edge Bing searches...")
-        self.browser.utils.goToSearch()
-
-        remainingSearches = self.browser.getRemainingSearches()
-        searchCount = 0
-        while searchCount < remainingSearches:
-            logging.info(f"[BING] {searchCount + 1}/{remainingSearches}")
-            searchCount = self.bingSearch(searchRelatedTerms, relatedTermsCount, searchCount)
-            if searchCount >= remainingSearches:
-                break
-
-            if searchRelatedTerms:
-                rootTerm = list(self.googleTrendsShelf.keys())[1]
-                terms = self.getRelatedTerms(rootTerm)
-                uniqueTerms = list(dict.fromkeys(terms))
-                uniqueTerms = [t for t in uniqueTerms if t.lower() != rootTerm.lower()]
-                for i, _ in enumerate(uniqueTerms[:relatedTermsCount]):
-                    searchCount = self.bingSearch(searchRelatedTerms, relatedTermsCount, searchCount)
-                    if searchCount >= remainingSearches:
-                        break
-
-        logging.info(f"[BING] Finished {self.browser.browserType.capitalize()} Edge Bing searches!")
-
-    def bingSearch(self, searchRelatedTerms: bool = False, relatedTermsCount: int = 0, searchCount: int = 0) -> int:
-        pointsBefore = self.browser.utils.getAccountPoints()
-        rootTerm = list(self.googleTrendsShelf.keys())[1]
-        terms = self.getRelatedTerms(rootTerm)
-        uniqueTerms = list(dict.fromkeys(terms))
-        uniqueTerms = [t for t in uniqueTerms if t.lower() != rootTerm.lower()]
-        logging.debug(f"rootTerm={rootTerm}")
-        logging.debug(f"uniqueTerms={uniqueTerms}")
-
-        if searchRelatedTerms:
-            terms = [rootTerm] + uniqueTerms[:relatedTermsCount]
-        else:
-            terms = [rootTerm]
-
-        searchbar = self.browser.utils.waitUntilClickable(By.ID, "sb_form_q", timeToWait=40)
-        searchbar.clear()
-        term = terms[0]
-        searchbar.send_keys(term)
-        searchbar.submit()
-
-        searchCount += 1
-        logging.info(f"[BING] {searchCount} searches completed")
-
-        del self.googleTrendsShelf[rootTerm]
-        logging.debug(f"Deleted '{rootTerm}'. Remaining terms: {list(self.googleTrendsShelf.keys())}")
-
-        sleep(randint(220, 280))
-        return searchCount
-
 def bingSearches(self, searchRelatedTerms: bool = False, relatedTermsCount: int = 2) -> None:
     logging.info(f"[BING] Starting {self.browser.browserType.capitalize()} Edge Bing searches...")
     self.browser.utils.goToSearch()
