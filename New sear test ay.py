@@ -72,6 +72,11 @@ class Searches:
                     self.googleTrendsShelf[trend] = None
             logging.debug(f"TRENDS LOADED: {list(self.googleTrendsShelf.keys())}")
 
+        # Automatically trigger searches when an instance is created
+        logging.info("Automatically starting Bing searches inside Searches class")
+        self.bingSearches(searchRelatedTerms=self.searchRelatedTerms, relatedTermsCount=self.relatedTermsCount)
+        logging.info("Search execution completed!")
+
     def getGoogleTrends(self, wordsCount: int) -> list[str]:
         """Fetch trends using trendspy"""
         logging.debug("Fetching trends via trendspy...")
@@ -112,14 +117,6 @@ class Searches:
         uniqueTerms = list(dict.fromkeys(relatedTerms))
         uniqueTerms = [t for t in uniqueTerms if t.lower() != term.lower()]
         return uniqueTerms
-
-    def run(self):
-        """
-        Run the Bing searches with full control inside newsearches.py.
-        """
-        logging.info("Starting search execution inside Searches class")
-        self.bingSearches(searchRelatedTerms=self.searchRelatedTerms, relatedTermsCount=self.relatedTermsCount)
-        logging.info("Search execution completed!")
 
     def bingSearches(self, searchRelatedTerms: bool = False, relatedTermsCount: int = 0) -> None:
         logging.info(f"[BING] Starting {self.browser.browserType.capitalize()} Edge Bing searches...")
