@@ -36,6 +36,14 @@ class Searches:
     baseDelay: Final[float] = CONFIG.get("retries").get("base_delay_in_seconds")
     retriesStrategy = RetriesStrategy[CONFIG.get("retries").get("strategy")]
 
+    def run(self, searchRelatedTerms: bool = True, relatedTermsCount: int = 2):
+        """
+        Run the Bing searches with full control inside newsearches.py.
+        """
+        logging.info("Starting search execution directly from newsearches.py")
+        self.bingSearches(searchRelatedTerms=searchRelatedTerms, relatedTermsCount=relatedTermsCount)
+        logging.info("Search execution completed!")
+
     def __init__(self, browser: Browser, num_additional_searches=2):
         self.browser = browser
         self.webdriver = browser.webdriver
