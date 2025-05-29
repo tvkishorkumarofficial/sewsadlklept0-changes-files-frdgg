@@ -4,9 +4,11 @@ import logging
 import shelve
 from datetime import date
 from enum import Enum, auto
+from itertools import cycle
 from random import randint, shuffle
 from time import sleep
 from typing import Final
+import contextlib
 
 import requests
 from selenium.webdriver.common.by import By
@@ -36,17 +38,11 @@ class Searches:
     baseDelay: Final[float] = CONFIG.get("retries").get("base_delay_in_seconds")
     retriesStrategy = RetriesStrategy[CONFIG.get("retries").get("strategy")]
 
-    def run(self, searchRelatedTerms: bool = True, relatedTermsCount: int = 2):
-        """
-        Run the Bing searches with full control inside newsearches.py.
-        """
-        logging.info("Starting search execution directly from newsearches.py")
-        self.bingSearches(searchRelatedTerms=searchRelatedTerms, relatedTermsCount=relatedTermsCount)
-        logging.info("Search execution completed!")
-
-    def __init__(self, browser: Browser, num_additional_searches=2):
+    def __init__(self, browser: Browser, searchRelatedTerms: bool = True, relatedTermsCount: int = 2, num_additional_searches=2):
         self.browser = browser
         self.webdriver = browser.webdriver
+        self.searchRelatedTerms = searchRelatedTerms
+        self.relatedTermsCount = relatedTermsCount
         self.num_additional_searches = num_additional_searches
 
         dumbDbm = dbm.dumb.open((getProjectRoot() / "google_trends").__str__())
@@ -116,6 +112,14 @@ class Searches:
         uniqueTerms = list(dict.fromkeys(relatedTerms))
         uniqueTerms = [t for t in uniqueTerms if t.lower() != term.lower()]
         return uniqueTerms
+
+    def run(self):
+        """
+        Run the Bing searches with full control inside newsearches.py.
+        """
+        logging.info("Starting search execution inside Searches class")
+        self.bingSearches(searchRelatedTerms=self.searchRelatedTerms, relatedTermsCount=self.relatedTermsCount)
+        logging.info("Search execution completed!")
 
     def bingSearches(self, searchRelatedTerms: bool = False, relatedTermsCount: int = 0) -> None:
         logging.info(f"[BING] Starting {self.browser.browserType.capitalize()} Edge Bing searches...")
