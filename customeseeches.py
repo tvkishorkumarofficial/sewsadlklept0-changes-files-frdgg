@@ -132,10 +132,8 @@ class Searches:
         while True:
             # --- SWITCH LOGIC ---
             if self.use_custom_limits and self.custom_search_limits:
-                remaining = self.browser.utils.RemainingSearches(
-                    desktop=self.custom_search_limits.get("desktop", 0),
-                    mobile=self.custom_search_limits.get("mobile", 0)
-                )
+                remaining_desktop = self.custom_search_limits.get("desktop", 0)
+                remaining_mobile = self.custom_search_limits.get("mobile", 0)
                 logging.info("[MODE] Using CUSTOM search limits")
             else:
                 remaining = self.browser.getRemainingSearches(desktopAndMobile=True)
@@ -191,10 +189,6 @@ class Searches:
                     else:
                         self.custom_search_limits["mobile"] = max(0, self.custom_search_limits["mobile"] - 1)
                 
-                    remaining = self.browser.utils.RemainingSearches(
-                        desktop=self.custom_search_limits.get("desktop", 0),
-                        mobile=self.custom_search_limits.get("mobile", 0)
-                    )
                     logging.debug(f"[CUSTOM COUNTERS] Updated: {remaining}")
                 else:
                     remaining = self.browser.getRemainingSearches(desktopAndMobile=True)
