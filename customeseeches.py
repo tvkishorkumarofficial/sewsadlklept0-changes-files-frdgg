@@ -139,7 +139,7 @@ class Searches:
                 remaining = self.browser.getRemainingSearches(desktopAndMobile=True)
                 logging.info("[MODE] Using AUTO-DETECTED remaining searches")
 
-            logging.info(f"[BING] Remaining searches={remaining}")
+            logging.info(f"[BING] Remaining searches: Desktop={remaining_desktop}, Mobile={remaining_mobile}")
         
             if ((self.browser.browserType == "desktop" and remaining.desktop <= 0) or
                 (self.browser.browserType == "mobile" and remaining.mobile <= 0)):
