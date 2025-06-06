@@ -130,7 +130,17 @@ class Searches:
         self.browser.utils.goToSearch()
 
         while True:
-            remaining = self.browser.getRemainingSearches(desktopAndMobile=True)
+            # --- SWITCH LOGIC ---
+            if self.use_custom_limits and self.custom_search_limits:
+                remaining = self.browser.utils.RemainingSearches(
+                    desktop=self.custom_search_limits.get("desktop", 0),
+                    mobile=self.custom_search_limits.get("mobile", 0)
+                )
+                logging.info("[MODE] Using CUSTOM search limits")
+            else:
+                remaining = self.browser.getRemainingSearches(desktopAndMobile=True)
+                logging.info("[MODE] Using AUTO-DETECTED remaining searches")
+
             logging.info(f"[BING] Remaining searches={remaining}")
             
             if ((self.browser.browserType == "desktop" and remaining.desktop <= 0) or
