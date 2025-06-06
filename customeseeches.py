@@ -37,7 +37,8 @@ class Searches:
         self,
         browser: Browser,
         num_additional_searches=2,
-        custom_search_limits={"desktop": 10, "mobile": 5},
+        custom_search_limits=None):
+       self.custom_search_limits = custom_search_limits or {"desktop": 10, "mobile": 5}
         use_custom_limits=True  # NEW: Explicit switch
     ):
         """
