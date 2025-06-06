@@ -134,7 +134,7 @@ class Searches:
             if self.use_custom_limits and self.custom_search_limits:
                 remaining_desktop = self.custom_search_limits.get("desktop", 0)
                 remaining_mobile = self.custom_search_limits.get("mobile", 0)
-                logging.info(f"[MODE] Using CUSTOM limits | Desktop: {remaining_desktop} | Mobile: {remaining_mobile}")
+                logging.info(f"[CUSTOM] Desktop: {remaining_desktop}, Mobile: {remaining_mobile}")
             else:
                 remaining = self.browser.getRemainingSearches(desktopAndMobile=True)
                 remaining_desktop, remaining_mobile = remaining.desktop, remaining.mobile
