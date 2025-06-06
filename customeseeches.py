@@ -33,7 +33,8 @@ class Searches:
     baseDelay: Final[float] = CONFIG.get("retries").get("base_delay_in_seconds")
     retriesStrategy = RetriesStrategy[CONFIG.get("retries").get("strategy")]
 
-    def __init__(self, browser: Browser, num_additional_searches=2):
+    def __init__(self, browser: Browser, num_additional_searches=2, custom_search_limits={"desktop": 10, "mobile": 5},
+        use_custom_limits=true ):
         self.browser = browser
         self.webdriver = browser.webdriver
         self.num_additional_searches = num_additional_searches
