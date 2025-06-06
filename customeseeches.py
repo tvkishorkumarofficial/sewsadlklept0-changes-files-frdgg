@@ -146,10 +146,6 @@ class Searches:
                 break
 
             logging.info(f"[BING] Remaining searches: Desktop={remaining_desktop}, Mobile={remaining_mobile}")
-        
-            if ((self.browser.browserType == "desktop" and remaining.desktop <= 0) or
-                (self.browser.browserType == "mobile" and remaining.mobile <= 0)):
-                break
 
             # Calculate needed searches (FIXED: removed duplicate calculation)
             if self.use_custom_limits and self.custom_search_limits:
