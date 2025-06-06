@@ -193,8 +193,6 @@ class Searches:
                     logging.debug(f"[COUNTERS] Desktop: {remaining_desktop} | Mobile: {remaining_mobile}")
                 else:
                     remaining = self.browser.getRemainingSearches(desktopAndMobile=True)
-            
-                logging.info(f"[BING] Updated remaining searches={remaining}")
 
         logging.info(f"[BING] Finished {self.browser.browserType.capitalize()} Edge Bing searches!")
 
