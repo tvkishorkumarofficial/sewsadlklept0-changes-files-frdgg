@@ -125,7 +125,7 @@ class Searches:
             return []
 
     def bingSearches(self) -> None:
-        """Version 2.3 - Exact counting with cross-device deduplication"""
+        """Version 2.4.2 - Custom/Auto search modes with fixed counter updates"""
         logging.info(f"[BING] Starting {self.browser.browserType.capitalize()} Edge Bing searches...")
         self.browser.utils.goToSearch()
 
@@ -142,12 +142,12 @@ class Searches:
                 logging.info("[MODE] Using AUTO-DETECTED remaining searches")
 
             logging.info(f"[BING] Remaining searches={remaining}")
-            
+        
             if ((self.browser.browserType == "desktop" and remaining.desktop <= 0) or
                 (self.browser.browserType == "mobile" and remaining.mobile <= 0)):
                 break
 
-            # Calculate needed searches
+            # Calculate needed searches (FIXED: removed duplicate calculation)
             if self.use_custom_limits and self.custom_search_limits:
                 needed_searches = (
                     self.custom_search_limits["desktop"] 
@@ -159,7 +159,6 @@ class Searches:
                     remaining.desktop if self.browser.browserType == "desktop" 
                     else remaining.mobile
                 )
-                
             
             if (len(self.googleTrendsShelf) <= 1 or
                 len([k for k in self.googleTrendsShelf.keys() if k != LOAD_DATE_KEY]) < needed_searches):
@@ -170,36 +169,36 @@ class Searches:
                     if trend.lower() not in self.usedKeywordsShelf:
                         self.googleTrendsShelf[trend] = None
                 self.googleTrendsShelf[LOAD_DATE_KEY] = date.today()
-                
+            
                 logging.debug(
                     f"BUFFER STATUS: Needed={needed_searches}, "
                     f"Loaded={len(trends)}, "
                     f"Now in shelf={len(self.googleTrendsShelf)-1}"
                 )
-                logging.debug(f"TRENDS LOADED: {list(self.googleTrendsShelf.keys())}")
 
             for _ in range(needed_searches):
                 if ((self.browser.browserType == "desktop" and remaining.desktop <= 0) or
                     (self.browser.browserType == "mobile" and remaining.mobile <= 0)):
                     break
-                    
+                
                 self.bingSearch()
                 sleep(randint(10, 15))
 
+                # FIXED INDENTATION AND LOGIC:
                 if self.use_custom_limits and self.custom_search_limits:
-    if self.browser.browserType == "desktop":
-        self.custom_search_limits["desktop"] = max(0, self.custom_search_limits["desktop"] - 1)
-    else:
-        self.custom_search_limits["mobile"] = max(0, self.custom_search_limits["mobile"] - 1)
-
-        # Update remaining object for logging
-    remaining = self.browser.utils.RemainingSearches(
-        desktop=self.custom_search_limits.get("desktop", 0),
-        mobile=self.custom_search_limits.get("mobile", 0)
-    )
-    logging.debug(f"[CUSTOM COUNTERS] Updated: {remaining}")
+                    if self.browser.browserType == "desktop":
+                        self.custom_search_limits["desktop"] = max(0, self.custom_search_limits["desktop"] - 1)
+                    else:
+                        self.custom_search_limits["mobile"] = max(0, self.custom_search_limits["mobile"] - 1)
                 
-                remaining = self.browser.getRemainingSearches(desktopAndMobile=True)
+                    remaining = self.browser.utils.RemainingSearches(
+                        desktop=self.custom_search_limits.get("desktop", 0),
+                        mobile=self.custom_search_limits.get("mobile", 0)
+                    )
+                    logging.debug(f"[CUSTOM COUNTERS] Updated: {remaining}")
+                else:
+                    remaining = self.browser.getRemainingSearches(desktopAndMobile=True)
+            
                 logging.info(f"[BING] Updated remaining searches={remaining}")
 
         logging.info(f"[BING] Finished {self.browser.browserType.capitalize()} Edge Bing searches!")
