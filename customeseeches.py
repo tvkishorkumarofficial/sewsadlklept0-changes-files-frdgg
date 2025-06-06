@@ -177,8 +177,8 @@ class Searches:
                 )
 
             for _ in range(needed_searches):
-                if ((self.browser.browserType == "desktop" and remaining.desktop <= 0) or
-                    (self.browser.browserType == "mobile" and remaining.mobile <= 0)):
+                current_remaining = remaining_desktop if self.browser.browserType == "desktop" else remaining_mobile
+                if current_remaining <= 0:
                     break
                 
                 self.bingSearch()
