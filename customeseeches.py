@@ -33,11 +33,22 @@ class Searches:
     baseDelay: Final[float] = CONFIG.get("retries").get("base_delay_in_seconds")
     retriesStrategy = RetriesStrategy[CONFIG.get("retries").get("strategy")]
 
-    def __init__(self, browser: Browser, num_additional_searches=2, custom_search_limits={"desktop": 10, "mobile": 5},
-        use_custom_limits=true ):
+    def __init__(
+        self,
+        browser: Browser,
+        num_additional_searches=2,
+        custom_search_limits={"desktop": 10, "mobile": 5},
+        use_custom_limits=True  # NEW: Explicit switch
+    ):
+        """
+        :param custom_search_limits: Dict to force search counts (e.g., {"desktop": 10, "mobile": 5})
+        :param use_custom_limits: If True, uses custom_search_limits; otherwise auto-detects remaining searches.
+        """
         self.browser = browser
         self.webdriver = browser.webdriver
         self.num_additional_searches = num_additional_searches
+        self.custom_search_limits = custom_search_limits
+        self.use_custom_limits = use_custom_limits  # NEW: Switch
 
         # Device-specific shelf (UNCHANGED)
         dumbDbm = dbm.dumb.open((getProjectRoot() / "google_trends").__str__())
