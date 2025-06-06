@@ -146,6 +146,19 @@ class Searches:
             if ((self.browser.browserType == "desktop" and remaining.desktop <= 0) or
                 (self.browser.browserType == "mobile" and remaining.mobile <= 0)):
                 break
+
+            # Calculate needed searches
+            if self.use_custom_limits and self.custom_search_limits:
+                needed_searches = (
+                    self.custom_search_limits["desktop"] 
+                    if self.browser.browserType == "desktop" 
+                    else self.custom_search_limits["mobile"]
+                )
+            else:
+                needed_searches = (
+                    remaining.desktop if self.browser.browserType == "desktop" 
+                    else remaining.mobile
+                )
                 
             needed_searches = remaining.desktop if self.browser.browserType == "desktop" else remaining.mobile
             
