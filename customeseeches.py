@@ -37,8 +37,7 @@ class Searches:
         self,
         browser: Browser,
         num_additional_searches=2,
-        custom_search_limits=None):
-       self.custom_search_limits = custom_search_limits or {"desktop": 10, "mobile": 5}
+        custom_search_limits=None,
         use_custom_limits=True  # NEW: Explicit switch
     ):
         """
@@ -48,7 +47,7 @@ class Searches:
         self.browser = browser
         self.webdriver = browser.webdriver
         self.num_additional_searches = num_additional_searches
-        self.custom_search_limits = custom_search_limits
+        self.custom_search_limits = custom_search_limits or {"desktop": 10, "mobile": 5}
         self.use_custom_limits = use_custom_limits  # NEW: Switch
 
         # Device-specific shelf (UNCHANGED)
