@@ -44,6 +44,11 @@ class Searches:
         :param custom_search_limits: Dict to force search counts (e.g., {"desktop": 10, "mobile": 5})
         :param use_custom_limits: If True, uses custom_search_limits; otherwise auto-detects remaining searches.
         """
+        if custom_search_limits is not None:
+            if not isinstance(custom_search_limits, dict):
+                raise ValueError("custom_search_limits must be a dictionary")
+            if not all(k in custom_search_limits for k in ["desktop", "mobile"]):
+                raise ValueError("custom_search_limits must contain 'desktop' and 'mobile' keys")
         self.browser = browser
         self.webdriver = browser.webdriver
         self.num_additional_searches = num_additional_searches
