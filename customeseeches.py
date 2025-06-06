@@ -186,6 +186,19 @@ class Searches:
                     
                 self.bingSearch()
                 sleep(randint(10, 15))
+
+                if self.use_custom_limits and self.custom_search_limits:
+    if self.browser.browserType == "desktop":
+        self.custom_search_limits["desktop"] = max(0, self.custom_search_limits["desktop"] - 1)
+    else:
+        self.custom_search_limits["mobile"] = max(0, self.custom_search_limits["mobile"] - 1)
+
+        # Update remaining object for logging
+    remaining = self.browser.utils.RemainingSearches(
+        desktop=self.custom_search_limits.get("desktop", 0),
+        mobile=self.custom_search_limits.get("mobile", 0)
+    )
+    logging.debug(f"[CUSTOM COUNTERS] Updated: {remaining}")
                 
                 remaining = self.browser.getRemainingSearches(desktopAndMobile=True)
                 logging.info(f"[BING] Updated remaining searches={remaining}")
