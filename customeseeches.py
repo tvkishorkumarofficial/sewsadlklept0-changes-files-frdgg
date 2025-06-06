@@ -134,7 +134,7 @@ class Searches:
             if self.use_custom_limits and self.custom_search_limits:
                 remaining_desktop = self.custom_search_limits.get("desktop", 0)
                 remaining_mobile = self.custom_search_limits.get("mobile", 0)
-                logging.info("[MODE] Using CUSTOM search limits")
+                logging.info(f"[MODE] Using CUSTOM limits | Desktop: {remaining_desktop} | Mobile: {remaining_mobile}")
             else:
                 remaining = self.browser.getRemainingSearches(desktopAndMobile=True)
                 logging.info("[MODE] Using AUTO-DETECTED remaining searches")
@@ -186,10 +186,11 @@ class Searches:
                 if self.use_custom_limits and self.custom_search_limits:
                     if self.browser.browserType == "desktop":
                         self.custom_search_limits["desktop"] = max(0, self.custom_search_limits["desktop"] - 1)
+                        remaining_desktop = self.custom_search_limits["desktop"]
                     else:
                         self.custom_search_limits["mobile"] = max(0, self.custom_search_limits["mobile"] - 1)
-                
-                    logging.debug(f"[CUSTOM COUNTERS] Updated: {remaining}")
+                        remaining_mobile = self.custom_search_limits["mobile"]
+                    logging.debug(f"[COUNTERS] Desktop: {remaining_desktop} | Mobile: {remaining_mobile}")
                 else:
                     remaining = self.browser.getRemainingSearches(desktopAndMobile=True)
             
