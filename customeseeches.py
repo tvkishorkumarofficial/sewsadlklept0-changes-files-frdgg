@@ -160,7 +160,6 @@ class Searches:
                     else remaining.mobile
                 )
                 
-            needed_searches = remaining.desktop if self.browser.browserType == "desktop" else remaining.mobile
             
             if (len(self.googleTrendsShelf) <= 1 or
                 len([k for k in self.googleTrendsShelf.keys() if k != LOAD_DATE_KEY]) < needed_searches):
