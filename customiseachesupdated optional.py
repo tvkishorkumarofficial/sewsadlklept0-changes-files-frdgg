@@ -209,7 +209,7 @@ class Searches:
                     else:
                         self.custom_search_limits["mobile"] = max(0, self.custom_search_limits["mobile"] - 1)
                         remaining_mobile = self.custom_search_limits["mobile"]
-                    logging.debug(f"[COUNTERS] Desktop: {remaining_desktop} | Mobile: {remaining_mobile}")
+                    logging.debug(f"[MODE:{mode}] Counters - Desktop: {remaining_desktop}, Mobile: {remaining_mobile}")
                 else:
                     remaining = self.browser.getRemainingSearches(desktopAndMobile=True)
 
