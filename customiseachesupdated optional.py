@@ -149,11 +149,13 @@ class Searches:
             if self.use_custom_limits and self.custom_search_limits:
                 remaining_desktop = self.custom_search_limits.get("desktop", 0)
                 remaining_mobile = self.custom_search_limits.get("mobile", 0)
-                logging.info(f"[CUSTOM] Desktop: {remaining_desktop}, Mobile: {remaining_mobile}")
             else:
                 remaining = self.browser.getRemainingSearches(desktopAndMobile=True)
                 remaining_desktop, remaining_mobile = remaining.desktop, remaining.mobile
-            logging.info(f"[AUTO] Desktop: {remaining_desktop}, Mobile: {remaining_mobile}")
+
+            # Unified logging format
+            mode = "CUSTOM" if (self.use_custom_limits and self.custom_search_limits) else "AUTO"
+            logging.info(f"[MODE:{mode}] Desktop: {remaining_desktop}, Mobile: {remaining_mobile}")
 
             # Unified exit condition
             current_remaining = remaining_desktop if self.browser.browserType == "desktop" else remaining_mobile
