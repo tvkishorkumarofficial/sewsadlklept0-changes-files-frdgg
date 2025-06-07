@@ -45,10 +45,13 @@ class Searches:
         :param use_custom_limits: If True, uses custom_search_limits; otherwise auto-detects remaining searches.
         """
         if custom_search_limits is not None:
+            # 1. Dictionary check
             if not isinstance(custom_search_limits, dict):
                 raise ValueError("custom_search_limits must be a dictionary")
+            # 2. Key existence check
             if not all(k in custom_search_limits for k in ["desktop", "mobile"]):
                 raise ValueError("custom_search_limits must contain 'desktop' and 'mobile' keys")
+            # 3. Value type check (NEW)
             if not all(isinstance(v, int) for v in custom_search_limits.values()):
                 raise ValueError("Search limits must be integers")
         self.browser = browser
