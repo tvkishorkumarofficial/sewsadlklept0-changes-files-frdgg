@@ -18,6 +18,7 @@ from src.utils import CONFIG, getProjectRoot, cooldown, COUNTRY
 LOAD_DATE_KEY = "loadDate"
 GLOBAL_KEYWORDS_DB = "used_keywords"
 GLOBAL_LOAD_DATE_KEY = "globalLoadDate"  # NEW in v2.4
+SEARCH_PROGRESS_KEY = "searchProgress"
 
 class RetriesStrategy(Enum):
     """Identical to original docstrings"""
