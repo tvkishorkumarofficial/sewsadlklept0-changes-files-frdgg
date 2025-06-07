@@ -73,11 +73,16 @@ class Searches:
         globalDbm = dbm.dumb.open((getProjectRoot() / GLOBAL_KEYWORDS_DB).__str__())
         self.usedKeywordsShelf: shelve.Shelf = shelve.Shelf(globalDbm)
         
-        # NEW GLOBAL RESET LOGIC (ONLY CHANGE IN v2.4)
+        # NEW: Initialize search progress tracking
+        self.search_progress = self.usedKeywordsShelf.get(SEARCH_PROGRESS_KEY, {"desktop": 0, "mobile": 0})
+        
+        # GLOBAL RESET LOGIC (Modified to handle progress tracking)
         global_load_date = self.usedKeywordsShelf.get(GLOBAL_LOAD_DATE_KEY)
         if global_load_date is None or global_load_date < date.today():
             self.usedKeywordsShelf.clear()
+            self.search_progress = {"desktop": 0, "mobile": 0}  # Reset progress on new day
             self.usedKeywordsShelf[GLOBAL_LOAD_DATE_KEY] = date.today()
+            self.usedKeywordsShelf[SEARCH_PROGRESS_KEY] = self.search_progress
 
         # EXISTING LOCAL RESET (UNCHANGED)
         loadDate: date | None = None
@@ -281,5 +286,10 @@ class Searches:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """Ensure progress is saved when exiting"""
+        if hasattr(self, 'search_progress'):
+            self.usedKeywordsShelf[SEARCH_PROGRESS_KEY] = self.search_progress
+            self.usedKeywordsShelf.sync()
+        
         self.googleTrendsShelf.close()
         self.usedKeywordsShelf.close()
