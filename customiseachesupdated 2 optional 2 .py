@@ -38,7 +38,7 @@ class Searches:
         browser: Browser,
         num_additional_searches=2,
         custom_search_limits=None,
-        use_custom_limits=True  # NEW: Explicit switch
+        use_custom_limits=True
     ):
         """
         :param custom_search_limits: Dict to force search counts (e.g., {"desktop": 10, "mobile": 5})
@@ -63,28 +63,33 @@ class Searches:
         self.webdriver = browser.webdriver
         self.num_additional_searches = num_additional_searches
         self.custom_search_limits = custom_search_limits or {"desktop": 10, "mobile": 5}
-        self.use_custom_limits = use_custom_limits  # NEW: Switch
+        self.use_custom_limits = use_custom_limits
 
         # Device-specific shelf (UNCHANGED)
         dumbDbm = dbm.dumb.open((getProjectRoot() / "google_trends").__str__())
         self.googleTrendsShelf: shelve.Shelf = shelve.Shelf(dumbDbm)
-        
-        # Global keyword tracker (UNCHANGED except NEW reset check)
+    
+        # Global keyword tracker (UNCHANGED)
         globalDbm = dbm.dumb.open((getProjectRoot() / GLOBAL_KEYWORDS_DB).__str__())
         self.usedKeywordsShelf: shelve.Shelf = shelve.Shelf(globalDbm)
-        
-        # NEW: Initialize search progress tracking
-        self.search_progress = self.usedKeywordsShelf.get(SEARCH_PROGRESS_KEY, {"desktop": 0, "mobile": 0})
-        
-        # GLOBAL RESET LOGIC (Modified to handle progress tracking)
+    
+        # NEW: Progress tracking initialization (only for custom mode)
+        if self.use_custom_limits:
+            self.search_progress = self.usedKeywordsShelf.get("searchProgress", {"desktop": 0, "mobile": 0})
+        else:
+            self.search_progress = {"desktop": 0, "mobile": 0}  # Dummy object for auto mode
+    
+        # GLOBAL RESET LOGIC (Modified to preserve existing behavior)
         global_load_date = self.usedKeywordsShelf.get(GLOBAL_LOAD_DATE_KEY)
         if global_load_date is None or global_load_date < date.today():
             self.usedKeywordsShelf.clear()
-            self.search_progress = {"desktop": 0, "mobile": 0}  # Reset progress on new day
             self.usedKeywordsShelf[GLOBAL_LOAD_DATE_KEY] = date.today()
-            self.usedKeywordsShelf[SEARCH_PROGRESS_KEY] = self.search_progress
+            # NEW: Reset progress only for custom mode
+            if self.use_custom_limits:
+                self.search_progress = {"desktop": 0, "mobile": 0}
+                self.usedKeywordsShelf["searchProgress"] = self.search_progress
 
-        # EXISTING LOCAL RESET (UNCHANGED)
+        # EXISTING LOCAL RESET (COMPLETELY UNCHANGED)
         loadDate: date | None = None
         if LOAD_DATE_KEY in self.googleTrendsShelf:
             loadDate = self.googleTrendsShelf[LOAD_DATE_KEY]
