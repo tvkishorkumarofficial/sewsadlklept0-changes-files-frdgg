@@ -57,6 +57,8 @@ class Searches:
             # 4. Positive integer validation
             if not all(isinstance(v, int) and v >= 0 for v in custom_search_limits.values()):
                 raise ValueError("Search limits must be positive integers")
+            if any(v == 0 for v in custom_search_limits.values()):
+                logging.warning("Zero search limits will skip all searches for that device type")
         self.browser = browser
         self.webdriver = browser.webdriver
         self.num_additional_searches = num_additional_searches
