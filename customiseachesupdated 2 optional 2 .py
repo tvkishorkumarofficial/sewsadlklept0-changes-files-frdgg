@@ -75,7 +75,7 @@ class Searches:
         self.usedKeywordsShelf: shelve.Shelf = shelve.Shelf(globalDbm)
     
         # NEW: Progress tracking initialization (only for custom mode)
-        if self.use_custom_limits:
+        if self.use_custom_limits and self.custom_search_limits is not None:
             self.search_progress = self.usedKeywordsShelf.get("searchProgress", {"desktop": 0, "mobile": 0})
         else:
             self.search_progress = {"desktop": 0, "mobile": 0}  # Dummy object for auto mode
@@ -157,7 +157,7 @@ class Searches:
 
         # NEW: Initialize progress tracking only for custom mode
         if self.use_custom_limits and self.custom_search_limits:
-            search_progress = self.usedKeywordsShelf.get("searchProgress", {"desktop": 0, "mobile": 0})
+            self.search_progress = self.usedKeywordsShelf.get("searchProgress", {"desktop": 0, "mobile": 0})
             # Adjust initial counts based on progress
             self.custom_search_limits["desktop"] = max(0, self.custom_search_limits["desktop"] - search_progress["desktop"])
             self.custom_search_limits["mobile"] = max(0, self.custom_search_limits["mobile"] - search_progress["mobile"])
