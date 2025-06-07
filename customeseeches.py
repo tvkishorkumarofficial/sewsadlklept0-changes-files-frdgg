@@ -54,6 +54,8 @@ class Searches:
             # 3. Value type check (NEW)
             if not all(isinstance(v, int) for v in custom_search_limits.values()):
                 raise ValueError("Search limits must be integers")
+            if not all(isinstance(v, int) and v >= 0 for v in custom_search_limits.values()):
+                raise ValueError("Search limits must be positive integers")
         self.browser = browser
         self.webdriver = browser.webdriver
         self.num_additional_searches = num_additional_searches
