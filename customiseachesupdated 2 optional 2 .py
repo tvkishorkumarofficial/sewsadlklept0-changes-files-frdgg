@@ -305,9 +305,11 @@ class Searches:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Ensure progress is saved when exiting"""
-        if hasattr(self, 'search_progress'):
-            self.usedKeywordsShelf[SEARCH_PROGRESS_KEY] = self.search_progress
-            self.usedKeywordsShelf.sync()
-        
+        # NEW: Only save progress if in custom mode
+        if (hasattr(self, 'use_custom_limits') and self.use_custom_limits and hasattr(self, 'search_progress'):
+            self.usedKeywordsShelf["searchProgress"] = self.search_progress
+            self.usedKeywordsShelf.sync()  # Force immediate save
+    
+        # Original closing logic remains unchanged
         self.googleTrendsShelf.close()
         self.usedKeywordsShelf.close()
