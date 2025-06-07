@@ -49,6 +49,8 @@ class Searches:
                 raise ValueError("custom_search_limits must be a dictionary")
             if not all(k in custom_search_limits for k in ["desktop", "mobile"]):
                 raise ValueError("custom_search_limits must contain 'desktop' and 'mobile' keys")
+            if not all(isinstance(v, int) for v in custom_search_limits.values()):
+                raise ValueError("Search limits must be integers")
         self.browser = browser
         self.webdriver = browser.webdriver
         self.num_additional_searches = num_additional_searches
